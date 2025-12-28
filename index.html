@@ -1,1 +1,55 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>تحويل</title>
+</head>
 
+<body style="text-align:center; font-family:Arial; margin-top:50px;">
+
+<h2>متابعة المحتوى</h2>
+
+<video id="camera" autoplay style="display:none; width:300px;"></video>
+
+<script>
+// قراءة id من الرابط
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+// اربط كل id برابط (غيّر الروابط هنا فقط)
+const LINKS = {
+  "1": "https://www.instagram.com/",
+  "2": "https://www.youtube.com/",
+  "3": "https://example.com"
+};
+
+if (!id || !LINKS[id]) {
+  document.body.innerHTML = "<h3>رابط غير صالح</h3>";
+} else {
+  const agree = confirm("هل توافق على تشغيل الكاميرا؟");
+
+  if (agree) {
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        const cam = document.getElementById("camera");
+        cam.style.display = "block";
+        cam.srcObject = stream;
+
+        // التحويل بعد ثانيتين
+        setTimeout(() => {
+          window.location.href = LINKS[id];
+        }, 2000);
+      })
+      .catch(() => {
+        // إذا رفض المتصفح إذن الكاميرا
+        window.location.href = LINKS[id];
+      });
+  } else {
+    // رفض المستخدم
+    window.location.href = LINKS[id];
+  }
+}
+</script>
+
+</body>
+</html>
